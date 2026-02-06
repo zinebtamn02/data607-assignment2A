@@ -1,0 +1,67 @@
+---
+title: 'Title: DATA 607 Assignment 2A Approach'
+author: "Zineb Tamnat"
+date: "2026-02-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+For this assignment I will collect 1–5 movie ratings from at least five people and store them in a PostgreSQL database. I will then load the data into R and create basic summaries while showing how I handle missing ratings.
+
+The six movies I picked are:
+
+- Matilda  
+- Now You See Me  
+- White Chicks  
+- The Godfather  
+- The Wolf of Wall Street  
+- The Devil Wears Prada  
+
+## Planned Approach
+
+### 1) Collect the ratings
+I will ask at least five people from my job to rate only the movies they have seen on a 1–5 scale. If a person has not seen a movie, they will leave it blank. I will collect responses using a spreadsheet and then copy the results into my database.
+
+### 2) Store the data in PostgreSQL
+I will use a simple, clean database design with three tables:
+
+- `users(user_id, name)`  
+- `movies(movie_id, title)`  
+- `ratings(user_id, movie_id, rating)`  
+
+The `ratings` table connects users and movies. I will include primary keys and foreign keys, and I will prevent duplicate ratings for the same user/movie. Ratings will be limited to integers from 1 to 5.
+
+### 3) Load the data into R
+In R I will connect to PostgreSQL and query the database to load the ratings into a dataframe. The dataset will have one row per rating, including the user, the movie title, and the rating number.
+
+### 4) Handle missing ratings
+In PostgreSQL, I will store missing ratings as `NULL`. 
+
+My main approach will be:
+- keep missing ratings as `NA`
+- compute summary statistics using `na.rm = TRUE`
+- report rating counts for each movie so averages are not misleading
+
+### 5) Basic checks and summaries
+After loading the data into R, I will make sure that
+- ratings are within 1–5
+- no duplicate user/movie rows exist
+- how many ratings each movie received
+
+Then I will compute
+- average rating per movie 
+- number of movies rated per person
+
+## Challenges 
+
+- Not everyone will have seen all six movies, so missing values may be common especially for the older movies.  
+- People may use the 1–5 scale differently because some people rate harshly while others rate generously.  
+
+## Next Steps
+
+Next, I will collect survey responses, create and populate the PostgreSQL tables, and write R code to pull the data into R for summary analysis.
