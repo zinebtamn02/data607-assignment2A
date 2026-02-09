@@ -1,0 +1,45 @@
+INSERT INTO movies (title) VALUES
+('Matilda'),
+('Now You See Me'),
+('White Chicks'),
+('The Godfather'),
+('The Wolf of Wall Street'),
+('The Devil Wears Prada');
+
+INSERT INTO users (name) VALUES
+('Zineb'),
+('Charles'),
+('Tasmia'),
+('Steve'),
+('Emily');
+
+-- The following isnerts the ratings I collected, leaves out any movie a person didn't see
+
+INSERT INTO ratings (user_id, movie_id, rating) VALUES
+-- Zineb 
+(1, 1, 5),  -- Matilda
+(1, 2, 4),  -- Now You See Me
+(1, 3, 5),  -- White Chicks
+(1, 4, 4),  -- The Godfather
+(1, 6, 5),  -- The Devil Wears Prada
+
+-- Charles
+(2, 3, 4),  -- White Chicks
+(2, 6, 5),  -- The Devil Wears Prada
+(2, 1, 3),  -- Matilda
+
+-- Tasmia 
+(3, 2, 4),  -- Now You See Me
+(3, 1, 3),  -- Matilda
+
+-- Steve 
+(4, 5, 5),  -- Wolf of Wall Street
+(4, 6, 4),  -- The Devil Wears Prada
+(4, 2, 3),  -- Now You See Me
+
+-- Emily 
+(5, 1, 4),  -- Matilda
+(5, 2, 5),  -- Now You See Me
+(5, 3, 3),  -- White Chicks
+(5, 6, 4);  -- The Devil Wears Prada
+
