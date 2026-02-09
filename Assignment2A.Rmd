@@ -1,0 +1,93 @@
+---
+title: "DATA 607 SQL and R: Movie Ratings"
+author: "Zineb Tamnat"
+output: html_document
+---
+
+## Overview
+
+For this assignment I collected 1–5 movie ratings from several people, stored them in a PostgreSQL database, and analyzed them in R. Because not everyone has seen every movie, missing ratings are expected and handled as NA in R.
+
+## Load Packages
+```{r}
+library(DBI)
+library(RPostgres)
+library(dplyr)
+library(tidyr)
+```
+
+I connected to my database.
+
+```{r}
+con <- dbConnect(
+  RPostgres::Postgres(),
+  host = Sys.getenv("PGHOST"),
+  port = Sys.getenv("PGPORT"),
+  dbname = Sys.getenv("PGDATABASE"),
+  user = Sys.getenv("PGUSER"),
+  password = Sys.getenv("PGPASSWORD")
+)
+dbListTables(con)
+```
+
+Here I am pulling the ratings from the SQL.
+```{r}
+ratings_long <- dbGetQuery(con, "
+SELECT u.name, m.title, r.rating
+FROM ratings r
+JOIN users u  ON u.user_id = r.user_id
+JOIN movies m ON m.movie_id = r.movie_id
+ORDER BY u.name, m.title;
+")
+
+ratings_long
+```
+
+
+Here I am creating the full User and Movie Table while handling  missing ratings.
+```{r}
+users  <- dbGetQuery(con, "SELECT name FROM users ORDER BY name;")
+movies <- dbGetQuery(con, "SELECT title FROM movies ORDER BY title;")
+
+ratings_complete <- expand_grid(
+  name = users$name,
+  title = movies$title
+) %>%
+  left_join(ratings_long, by = c("name", "title"))
+
+ratings_complete
+```
+
+Here I am getting the average ratings
+```{r}
+movie_summary <- ratings_complete %>%
+  group_by(title) %>%
+  summarise(
+    num_ratings = sum(!is.na(rating)),
+    avg_rating = mean(rating, na.rm = TRUE)
+  ) %>%
+  arrange(desc(avg_rating))
+
+movie_summary
+```
+
+Here I am getting the ratings per person
+```{r}
+user_summary <- ratings_complete %>%
+  group_by(name) %>%
+  summarise(
+    num_rated = sum(!is.na(rating)),
+    avg_given = mean(rating, na.rm = TRUE)
+  )
+
+user_summary
+```
+
+
+
+
+
+
+
+
+
